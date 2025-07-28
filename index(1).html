@@ -1,0 +1,226 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Inclusión en la Educación Superior</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .slide { display: none; }
+        .slide.active { display: block; }
+        .fade { animation: fade 1s; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-4">
+        <div id="slides" class="relative">
+            <!-- Slide 1: Introduction -->
+            <div class="slide active bg-white p-8 rounded-lg shadow-lg fade">
+                <h1 class="text-4xl font-bold text-center text-blue-800 mb-4">Universidad del Alba</h1>
+                <h2 class="text-2xl font-semibold text-center text-gray-700 mb-2">Estudiante Magíster en Educación</h2>
+                <h3 class="text-xl text-center text-gray-600 mb-2">Nombre: Pablo Robledo T.</h3>
+                <h3 class="text-xl text-center text-gray-600 mb-6">TICs para la Docencia en Educación Superior<br>Profesora: Angela Susana Valverde Henriquez</h3>
+                <h2 class="text-3xl font-bold text-center text-blue-600">Guía Integrada para la Transversalización de Género e Inclusión de Personas con Discapacidad</h2>
+                <p class="text-lg text-gray-700 mt-4">Asignatura: Inclusión en la Educación Superior, Universidad del Alba, 2025</p>
+                <div class="mt-6 text-center">
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 2: Marcos Conceptuales -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Marcos Conceptuales: Género y Discapacidad</h2>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Sistema Sexo-Género</h3>
+                <p class="text-gray-600 mb-4">El sistema sexo-género asigna roles estereotipados: mujeres al ámbito privado, hombres al público. En 2025, solo el 24% de estudiantes STEM son mujeres (CNED), y el 28% de cargos directivos universitarios (INE).</p>
+                <p class="text-gray-600 mb-4">Agentes como el lenguaje y la educación refuerzan estereotipos (Butler, 1990). Freire (2018) aboga por una educación liberadora. En La Araucanía, las mujeres mapuche enfrentan barreras adicionales (INE, 2025).</p>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Concepto de Discapacidad</h3>
+                <p class="text-gray-600 mb-4">Ley 20.422 define la discapacidad como restricciones de participación por barreras ambientales. En 2025, 2.8 millones de chilenos (16.7%) tienen discapacidad, con solo el 5% completando educación superior (CNED).</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 3: Interseccionalidad -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Interseccionalidad</h2>
+                <p class="text-gray-600 mb-4">La interseccionalidad (Crenshaw, 1989) analiza el cruce de género, discapacidad, etnia y clase. Las mujeres con discapacidad tienen 15% de empleabilidad vs. 30% de hombres (Senadis, 2025).</p>
+                <p class="text-gray-600 mb-4">En Concepción, estudiantes mapuche con discapacidad enfrentan un 10% de deserción (INE, 2025).</p>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Caso Práctico: Mujer Mapuche en STEM</h3>
+                <p class="text-gray-600 mb-4">Una estudiante mapuche con discapacidad motriz en ingeniería (La Araucanía) enfrenta barreras físicas y estigma. Solución: Usar Diseño Universal para el Aprendizaje (DUA) y sensibilizar sobre interseccionalidad.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 4: Normativas Chilenas -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Normativas Chilenas para la Inclusión</h2>
+                <ul class="list-disc list-inside text-gray-600 mb-4">
+                    <li><strong>Ley 20.422 (2010):</strong> Promueve accesibilidad universal y vida independiente. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1010902" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                    <li><strong>Ley 21.015 (2017):</strong> Incentiva inclusión laboral (1% contratación). <a href="https://www.bcn.cl/leychile/navegar?idNorma=1105811" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                    <li><strong>Ley 21.275 (2020):</strong> Regula accesibilidad en espacios públicos/privados. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1152567" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                    <li><strong>Ley 21.091 (2018):</strong> Exige ajustes razonables en educación superior. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1118448" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                    <li><strong>Ley 21.369 (2021):</strong> Regula acoso sexual y discriminación en universidades. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1165487" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                </ul>
+                <p class="text-gray-600 mb-4">Implementación: Universidad del Alba (Calama) aplica Ley 21.369 contra acoso; Concepción audita infraestructura (Ley 21.275).</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 5: División Sexual del Trabajo -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">División Sexual del Trabajo y Accesibilidad</h2>
+                <p class="text-gray-600 mb-4">Mujeres dedican 6.2 horas más diarias a tareas domésticas (INE, 2025). Brecha salarial: 20%. Solo 28% de cargos directivos universitarios son ocupados por mujeres.</p>
+                <p class="text-gray-600 mb-4">Accesibilidad universal (Ley 20.422, 21.275) exige entornos utilizables por todos. En Calama, la falta de rampas limita a estudiantes con discapacidad (Senadis, 2025).</p>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Caso Práctico: Mujer en Minería, Calama</h3>
+                <p class="text-gray-600 mb-4">Estudiante con discapacidad motriz en ingeniería de minas enfrenta barreras físicas y carga doméstica. Solución: DUA y horarios flexibles.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 6: Brechas y Barreras -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Brechas, Barreras e Inequidades</h2>
+                <p class="text-gray-600 mb-4">Brechas de género: 20% brecha salarial, segregación ocupacional, mayor carga doméstica (Observatorio de Género, 2025). Solo 5% de personas con discapacidad completan educación superior (CNED, 2025).</p>
+                <p class="text-gray-600 mb-4">Mujeres mapuche con discapacidad: 10% empleabilidad (INE, 2025).</p>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Caso Práctico: Estudiante Mapuche en Concepción</h3>
+                <p class="text-gray-600 mb-4">Estudiante mapuche con discapacidad intelectual en pedagogía enfrenta estigma. Solución: DUA y mentorías.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 7: Autonomías y Discriminación -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Autonomías y Discriminación</h2>
+                <p class="text-gray-600 mb-4">Autonomías: Física (sin violencia), económica (trabajo remunerado), y en toma de decisiones. Violencia de género afecta al 25% de mujeres (Ministerio de la Mujer, 2025).</p>
+                <p class="text-gray-600 mb-4">Micromachismos y estigma hacia personas con discapacidad son comunes (MOVILH, 2025).</p>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Caso Práctico: Acoso Interseccional</h3>
+                <p class="text-gray-600 mb-4">Estudiante trans con discapacidad visual (La Araucanía) enfrenta comentarios discriminatorios. Solución: Protocolos Ley 21.369 y materiales accesibles.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 8: Recursos Audiovisuales -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Recursos Audiovisuales</h2>
+                <p class="text-gray-600 mb-4">Video educativo de SernamEG sobre programas para mujeres en Chile:</p>
+                <div class="video-container mb-4">
+                    <iframe src="https://www.youtube.com/embed/ikDCoWRaqWk" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <p class="text-gray-600 mb-4">Webinars del Ministerio de Educación: <a href="https://www.mineduc.cl/" target="_blank" class="text-blue-600 hover:underline">mineduc.cl</a></p>
+                <p class="text-gray-600 mb-4">Recursos de Comunidad Mujer: <a href="https://www.comunidadmujer.cl/" target="_blank" class="text-blue-600 hover:underline">comunidadmujer.cl</a></p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 9: Recomendaciones Pedagógicas -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Recomendaciones Pedagógicas</h2>
+                <ul class="list-disc list-inside text-gray-600 mb-4">
+                    <li>Incorporar textos de Butler, Freire, hooks y Vygotsky.</li>
+                    <li>Usar guías de lenguaje inclusivo (Universidad de Chile, 2024).</li>
+                    <li>Diseñar clases con ejemplos de Concepción y Calama.</li>
+                    <li>Aplicar DUA para materiales accesibles.</li>
+                    <li>Capacitarse en protocolos de la Ley 21.369.</li>
+                    <li>Usar datos de INE y Senadis para proyectos.</li>
+                </ul>
+                <p class="text-gray-600 mb-4">Herramientas: Rúbricas adaptadas, retroalimentación formativa, lectores de pantalla (JAWS, NVDA), y plataformas como Genially y Canvas.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 10: Conclusión -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Conclusión</h2>
+                <p class="text-gray-600 mb-4">Esta guía transversaliza género y discapacidad en la educación superior, promoviendo aulas equitativas en el Chile de 2025. Integra normativas, estadísticas, casos prácticos y estrategias pedagógicas para una sociedad inclusiva.</p>
+                <p class="text-gray-600 mb-4">La Universidad del Alba lidera la implementación de políticas inclusivas, alineadas con el Ministerio de Educación, para transformar la docencia en La Araucanía, Concepción y Calama.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'fade');
+                if (i === index) {
+                    slide.classList.add('active', 'fade');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
