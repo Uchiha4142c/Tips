@@ -1,0 +1,236 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Inclusión en la Educación Superior</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .slide { display: none; }
+        .slide.active { display: block; }
+        .fade { animation: fade 1s; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-4">
+        <div id="slides" class="relative">
+            <!-- Slide 1: Introduction -->
+            <div class="slide active bg-white p-8 rounded-lg shadow-lg fade">
+                <h1 class="text-4xl font-bold text-center text-blue-800 mb-4">Universidad del Alba</h1>
+                <h2 class="text-2xl font-semibold text-center text-gray-700 mb-2">Estudiante Magíster en Educación</h2>
+                <h3 class="text-xl text-center text-gray-600 mb-2">Nombre: Pablo Robledo T.</h3>
+                <h3 class="text-xl text-center text-gray-600 mb-6">TICs para la Docencia en Educación Superior<br>Profesora: Angela Susana Valverde Henriquez</h3>
+                <h2 class="text-3xl font-bold text-center text-blue-600">Guía Integrada para la Transversalización de Género e Inclusión de Personas con Discapacidad</h2>
+                <p class="text-lg text-gray-700 mt-4">Asignatura: Inclusión en la Educación Superior, Universidad del Alba, 2025</p>
+                <p class="text-gray-600 mt-4">Esta guía ofrece un marco integral para promover la equidad en la educación superior, alineada con los valores de inclusión, solidaridad y humanidad de la Universidad del Alba, una institución privada autónoma fundada en 2021 (Decreto Exento Nº 151, Ministerio de Educación). Con sedes en Antofagasta, La Serena, Santiago y Chillán, UDALBA está acreditada por la CNA hasta 2026, con un enfoque en formación de calidad y responsabilidad social.</p>[](https://es.wikipedia.org/wiki/Universidad_del_Alba)[](https://demre.cl/paes/universidades-participantes/universidad-del-alba)
+                <div class="mt-6 text-center">
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 2: Marcos Conceptuales -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Marcos Conceptuales: Género y Discapacidad</h2>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Sistema Sexo-Género</h3>
+                <p class="text-gray-600 mb-4">El sistema sexo-género perpetúa roles estereotipados, asignando a mujeres el ámbito doméstico y a hombres el público, lo que limita oportunidades. En 2025, solo el 24% de estudiantes en carreras STEM son mujeres, y el 28% de cargos directivos universitarios están ocupados por ellas (INE, CNED). Judith Butler (1990) destaca cómo el lenguaje y las normas sociales refuerzan estas desigualdades, mientras Paulo Freire (2018) propone una educación liberadora para desmantelarlas. En regiones como La Araucanía, las mujeres mapuche enfrentan barreras adicionales, con solo un 15% accediendo a educación superior (INE, 2025).</p>[](https://es.wikipedia.org/wiki/Universidad_del_Alba)
+                <p class="text-gray-600 mb-4">La educación debe desafiar estos patrones mediante currículos inclusivos y prácticas pedagógicas que promuevan la equidad, como el uso de lenguaje no sexista y la incorporación de perspectivas de género en todas las disciplinas.</p>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Concepto de Discapacidad</h3>
+                <p class="text-gray-600 mb-4">La Ley 20.422 (2010) define la discapacidad como limitaciones en la participación derivadas de barreras ambientales y sociales, no solo de condiciones individuales. En 2025, 2.8 millones de chilenos (16.7%) tienen alguna discapacidad, pero solo el 5% completa estudios superiores (CNED). En Antofagasta, la falta de infraestructura accesible limita el acceso a universidades como UDALBA, a pesar de sus esfuerzos por implementar ajustes razonables (Senadis, 2025). El modelo social de discapacidad, respaldado por la Convención sobre los Derechos de las Personas con Discapacidad (ONU, 2006), enfatiza la eliminación de barreras físicas, comunicacionales y actitudinales.</p>
+                <p class="text-gray-600 mb-4">UDALBA, con su compromiso de inclusión social, implementa laboratorios accesibles y bibliotecas virtuales en sus campus, pero aún enfrenta desafíos en la formación docente para abordar necesidades específicas de estudiantes con discapacidad.</p>[](https://admision.udalba.cl/)
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 3: Interseccionalidad -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Interseccionalidad</h2>
+                <p class="text-gray-600 mb-4">La interseccionalidad, conceptualizada por Kimberlé Crenshaw (1989), analiza cómo género, discapacidad, etnia y clase se cruzan, generando desigualdades únicas. En Chile, las mujeres con discapacidad tienen una empleabilidad del 15%, comparada con el 30% de hombres con discapacidad (Senadis, 2025). En La Serena, estudiantes mapuche con discapacidad enfrentan una tasa de deserción del 10% en educación superior, debido a barreras culturales y económicas (INE, 2025).</p>
+                <p class="text-gray-600 mb-4">La interseccionalidad requiere enfoques educativos que consideren estas múltiples dimensiones. Por ejemplo, UDALBA en La Serena ha implementado programas de mentoría para estudiantes indígenas y con discapacidad, pero la falta de recursos específicos para mujeres mapuche con discapacidad limita el impacto. La perspectiva interseccional también aboga por políticas que integren datos desagregados por género, etnia y discapacidad para diseñar intervenciones efectivas.</p>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Caso Práctico: Mujer Mapuche en STEM</h3>
+                <p class="text-gray-600 mb-4">Una estudiante mapuche con discapacidad motriz en la carrera de Ingeniería en La Serena enfrenta barreras físicas (falta de ascensores) y culturales (estereotipos sobre mujeres indígenas en STEM). Solución: Implementar Diseño Universal para el Aprendizaje (DUA), con materiales accesibles y clases grabadas, junto con talleres de sensibilización para docentes y estudiantes sobre interseccionalidad. UDALBA podría colaborar con organizaciones como la Fundación Acción Comunitaria para apoyar a estas estudiantes.</p>[](https://www.udalba.cl/)
+                <p class="text-gray-600 mb-4">Este caso refleja la necesidad de políticas institucionales que integren la perspectiva interseccional, como becas específicas y acompañamiento académico, para reducir la deserción y promover la equidad.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 4: Normativas Chilenas -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Normativas Chilenas para la Inclusión</h2>
+                <p class="text-gray-600 mb-4">Chile ha avanzado en normativas para promover la inclusión en educación superior, alineadas con los Objetivos de Desarrollo Sostenible (ODS) de la Agenda 2030. Estas leyes son fundamentales para garantizar derechos y accesibilidad en instituciones como UDALBA, que busca consolidar su compromiso con la calidad educativa.</p>[](https://es.wikipedia.org/wiki/Universidad_del_Alba)
+                <ul class="list-disc list-inside text-gray-600 mb-4">
+                    <li><strong>Ley 20.422 (2010):</strong> Establece normas sobre igualdad de oportunidades y accesibilidad universal, exigiendo ajustes en infraestructura y servicios. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1010902" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                    <li><strong>Ley 21.015 (2017):</strong> Promueve la inclusión laboral, exigiendo un 1% de contratación de personas con discapacidad en empresas grandes. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1105811" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                    <li><strong>Ley 21.275 (2020):</strong> Regula la accesibilidad en espacios públicos y privados, incluyendo campus universitarios. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1152567" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                    <li><strong>Ley 21.091 (2018):</strong> Obliga a universidades a implementar ajustes razonables para estudiantes con discapacidad, como materiales en braille o intérpretes de lengua de señas. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1118448" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                    <li><strong>Ley 21.369 (2021):</strong> Regula el acoso sexual, la violencia de género y la discriminación en universidades, exigiendo protocolos específicos. <a href="https://www.bcn.cl/leychile/navegar?idNorma=1165487" target="_blank" class="text-blue-600 hover:underline">Enlace</a></li>
+                </ul>
+                <p class="text-gray-600 mb-4">Implementación: UDALBA en Antofagasta aplica la Ley 21.369 mediante protocolos contra el acoso, mientras que en La Serena audita su infraestructura para cumplir con la Ley 21.275. Sin embargo, la acreditación de solo tres años (CNA, 2023–2026) sugiere desafíos en la implementación plena de estas normativas, especialmente en la formación docente y la infraestructura accesible.</p>[](https://es.wikipedia.org/wiki/Universidad_del_Alba)[](https://demre.cl/paes/universidades-participantes/universidad-del-alba)
+                <p class="text-gray-600 mb-4">En 2024, UDALBA reportó que el 92% de sus estudiantes están en programas acreditados, pero persisten preocupaciones sobre la calidad de los campos clínicos para carreras como Medicina, lo que podría afectar la inclusión de estudiantes con discapacidad en Antofagasta.</p>[](https://www.reddit.com/r/EducacionChile/comments/1igsnb3/porque_dicen_que_es_tan_mala_la_universidad_del/?tl=en)
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 5: División Sexual del Trabajo -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">División Sexual del Trabajo y Accesibilidad</h2>
+                <p class="text-gray-600 mb-4">La división sexual del trabajo asigna a las mujeres mayor carga en tareas domésticas, dedicando 6.2 horas más al día que los hombres (INE, 2025). Esto contribuye a una brecha salarial del 20% y a que solo el 28% de cargos directivos universitarios sean ocupados por mujeres. En Antofagasta, donde la minería es clave, las mujeres representan solo el 8% de la fuerza laboral en este sector (SernamEG, 2025).</p>
+                <p class="text-gray-600 mb-4">La accesibilidad universal, regulada por las Leyes 20.422 y 21.275, exige entornos utilizables por todos. En Antofagasta, UDALBA ha implementado laboratorios de ingeniería accesibles, pero la falta de rampas en algunos edificios limita a estudiantes con discapacidad motriz (Senadis, 2025). La universidad ofrece becas y programas como Advance (100% online) para facilitar el acceso a mujeres con responsabilidades domésticas.</p>[](https://admision.udalba.cl/)[](https://advance.udalba.cl/)
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Caso Práctico: Mujer en Ingeniería de Minas, Antofagasta</h3>
+                <p class="text-gray-600 mb-4">Una estudiante con discapacidad motriz en Ingeniería de Minas en la sede de Antofagasta enfrenta barreras físicas (edificios sin ascensores) y una carga doméstica significativa. Solución: Aplicar DUA con recursos digitales accesibles, horarios flexibles y clases grabadas en el campus virtual. UDALBA podría implementar la Bolsa de Trabajo y la Red de Emprendedores para conectar a estas estudiantes con oportunidades laborales en minería.</p>[](https://antofagastaaldia.cl/universidad-del-alba-abre-nuevas-opciones-para-la-educacion-superior-en-antofagasta/)
+                <p class="text-gray-600 mb-4">Este caso destaca la necesidad de políticas que combinen accesibilidad física con flexibilidad académica, apoyadas por alianzas con el sector minero en Antofagasta para promover la inclusión laboral de mujeres con discapacidad.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 6: Brechas y Barreras -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Brechas, Barreras e Inequidades</h2>
+                <p class="text-gray-600 mb-4">Las brechas de género persisten: 20% de brecha salarial, segregación ocupacional y mayor carga doméstica para mujeres (Observatorio de Género, 2025). Solo el 5% de personas con discapacidad completan educación superior, debido a barreras físicas, comunicacionales y actitudinales (CNED, 2025). Las mujeres mapuche con discapacidad enfrentan una empleabilidad del 10%, comparada con el 25% de hombres mapuche (INE, 2025).</p>
+                <p class="text-gray-600 mb-4">En La Serena, UDALBA ha implementado programas como la Universidad de la Experiencia para mayores de 50 años, pero las barreras para estudiantes con discapacidad incluyen la falta de formación docente en DUA y recursos limitados para intérpretes de lengua de señas (Senadis, 2025). La universidad debe fortalecer su Sistema de Aseguramiento de Calidad para abordar estas inequidades.</p>[](https://www.udalba.cl/)[](https://www.udalba.cl/universidad/)
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Caso Práctico: Estudiante Mapuche en Concepción</h3>
+                <p class="text-gray-600 mb-4">Una estudiante mapuche con discapacidad intelectual en Pedagogía en la sede de Chillán enfrenta estigma y falta de materiales adaptados. Solución: Implementar DUA con textos en formatos accesibles (audio, braille) y mentorías con docentes capacitados en inclusión. UDALBA podría colaborar con la Red Hispanoamericana de Derechos Humanos Francisco de Vitoria para promover la dignidad humana en sus programas educativos.</p>[](https://es.wikipedia.org/wiki/Universidad_del_Alba)
+                <p class="text-gray-600 mb-4">Este caso subraya la importancia de capacitar a docentes en estrategias inclusivas y de integrar perspectivas culturales en el currículo para reducir el estigma y la deserción.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 7: Autonomías y Discriminación -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Autonomías y Discriminación</h2>
+                <p class="text-gray-600 mb-4">Las autonomías (física, económica y en toma de decisiones) son esenciales para la inclusión. La violencia de género afecta al 25% de las mujeres en Chile, y las personas con discapacidad enfrentan estigma en un 40% de los casos educativos (Ministerio de la Mujer, MOVILH, 2025). En UDALBA, la implementación de la Ley 21.369 ha reducido incidentes de acoso en un 15% en sus campus, pero persisten micromachismos y actitudes capacitistas.</p>
+                <p class="text-gray-600 mb-4">La autonomía económica se ve limitada por la baja empleabilidad de mujeres con discapacidad (15%) y la segregación ocupacional. UDALBA en Antofagasta ofrece programas como la Red de Emprendedores para apoyar a mujeres, pero la falta de campos clínicos para carreras de salud limita oportunidades para estudiantes con discapacidad.</p>[](https://www.reddit.com/r/EducacionChile/comments/1igsnb3/porque_dicen_que_es_tan_mala_la_universidad_del/?tl=en)[](https://antofagastaaldia.cl/universidad-del-alba-abre-nuevas-opciones-para-la-educacion-superior-en-antofagasta/)
+                <h3 class="text-2xl font-semibold text-gray-700 mb-2">Caso Práctico: Acoso Interseccional</h3>
+                <p class="text-gray-600 mb-4">Una estudiante trans con discapacidad visual en la sede de La Serena enfrenta comentarios discriminatorios y dificultades para acceder a materiales. Solución: Aplicar protocolos de la Ley 21.369, proporcionar materiales en formatos accesibles (lectores de pantalla como JAWS) y realizar talleres de sensibilización. UDALBA podría implementar la Cátedra Cardenal Cisneros para promover los derechos humanos en su comunidad.</p>[](https://es.wikipedia.org/wiki/Universidad_del_Alba)
+                <p class="text-gray-600 mb-4">Este caso resalta la necesidad de políticas integrales que combinen normativas contra la discriminación con recursos tecnológicos y formación docente.</p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 8: Recursos Audiovisuales -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Recursos Audiovisuales</h2>
+                <p class="text-gray-600 mb-4">Video educativo de SernamEG sobre programas para mujeres en Chile:</p>
+                <div class="video-container mb-4">
+                    <iframe src="https://www.youtube.com/embed/ikDCoWRaqWk" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <p class="text-gray-600 mb-4">Webinars del Ministerio de Educación: <a href="https://www.mineduc.cl/" target="_blank" class="text-blue-600 hover:underline">mineduc.cl</a></p>
+                <p class="text-gray-600 mb-4">Recursos de Comunidad Mujer: <a href="https://www.comunidadmujer.cl/" target="_blank" class="text-blue-600 hover:underline">comunidadmujer.cl</a></p>
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 9: Recomendaciones Pedagógicas -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Recomendaciones Pedagógicas</h2>
+                <p class="text-gray-600 mb-4">Para transversalizar género y discapacidad, UDALBA debe adoptar un enfoque pedagógico inclusivo, alineado con su misión de democratizar la educación superior. Estas recomendaciones se basan en normativas chilenas y mejores prácticas internacionales.</p>[](https://www.udalba.cl/universidad/)
+                <ul class="list-disc list-inside text-gray-600 mb-4">
+                    <li>Incorporar textos de Judith Butler, Paulo Freire, bell hooks y Lev Vygotsky para fomentar el pensamiento crítico sobre género y discapacidad.</li>
+                    <li>Adoptar guías de lenguaje inclusivo de la Universidad de Chile (2024) para evitar sesgos sexistas y capacitistas en materiales docentes.</li>
+                    <li>Diseñar clases con ejemplos contextualizados de Antofagasta, La Serena, Santiago y Chillán, como casos de minería o agricultura local.</li>
+                    <li>Aplicar DUA, proporcionando materiales en múltiples formatos (texto, audio, video) y clases grabadas en el campus virtual Advance.</li>[](https://advance.udalba.cl/)
+                    <li>Capacitar a docentes en protocolos de la Ley 21.369 y en herramientas como JAWS, NVDA y BrailleNote para apoyar a estudiantes con discapacidad.</li>
+                    <li>Usar datos desagregados de INE y Senadis para proyectos estudiantiles que analicen brechas de género y discapacidad en regiones específicas.</li>
+                    <li>Integrar la perspectiva interseccional en el currículo, abordando cómo etnia, género y discapacidad interactúan en contextos chilenos.</li>
+                </ul>
+                <p class="text-gray-600 mb-4">Herramientas recomendadas: Rúbricas adaptadas para evaluar competencias inclusivas, retroalimentación formativa, plataformas como Genially y Canvas, y laboratorios virtuales para carreras técnicas. UDALBA podría aprovechar su alianza con la Universidad de Alcalá (Cátedra Cardenal Cisneros) para desarrollar módulos de formación docente en inclusión.</p>[](https://es.wikipedia.org/wiki/Universidad_del_Alba)
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                    <button onclick="nextSlide()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Slide 10: Conclusión -->
+            <div class="slide bg-white p-8 rounded-lg shadow-lg fade">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4">Conclusión</h2>
+                <p class="text-gray-600 mb-4">Esta guía promueve la transversalización de género y discapacidad en la educación superior, alineada con la misión de UDALBA de ofrecer una educación inclusiva y de calidad en Antofagasta, La Serena, Santiago y Chillán. Integra normativas chilenas (Leyes 20.422, 21.015, 21.275, 21.091, 21.369), estadísticas actualizadas (INE, Senadis, CNED 2025), casos prácticos y estrategias pedagógicas para construir aulas equitativas en el Chile de 2025.</p>
+                <p class="text-gray-600 mb-4">UDALBA, acreditada hasta 2026, lidera iniciativas como la Universidad de la Experiencia y la Red de Emprendedores, pero debe fortalecer la infraestructura accesible y la formación docente para cumplir plenamente con su vocación inclusiva. A través de alianzas internacionales (e.g., Cátedra Cardenal Cisneros) y programas como Advance, la universidad transforma la docencia, promoviendo el desarrollo regional y la justicia social.</p>[](https://www.udalba.cl/)[](https://es.wikipedia.org/wiki/Universidad_del_Alba)[](https://demre.cl/paes/universidades-participantes/universidad-del-alba)
+                <div class="mt-6 text-center">
+                    <button onclick="prevSlide()" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 mr-2">Anterior</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'fade');
+                if (i === index) {
+                    slide.classList.add('active', 'fade');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
